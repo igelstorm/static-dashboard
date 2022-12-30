@@ -1,0 +1,32 @@
+---
+title: "Example Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+    # vertical_layout: fill
+knit: (function(inputFile, encoding) { rmarkdown::render(inputFile, encoding=encoding, output_dir = "output") })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  # cache = TRUE,
+  fig.height = 5,
+  echo = FALSE
+)
+```
+
+```{js}
+const setDefaultValue = function(filterId, defaultValue) {
+  document.addEventListener("DOMContentLoaded", function(event) { 
+    document.getElementById(filterId).getElementsByClassName("selectized")[0].selectize.setValue(defaultValue, false);
+  });
+};
+```
+
+# Overview {data-navmenu="Background"}
+
+## Column
+
+### Overview
+
+Text
