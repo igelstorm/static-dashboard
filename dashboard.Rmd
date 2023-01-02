@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 library(crosstalk)
 library(dplyr)
+library(glue)
 library(plotly)
 ```
 
@@ -43,11 +44,12 @@ Text
 daily_totals <- readRDS("output/results/daily_totals.rds")
 
 shared_data <- daily_totals %>%
-  select(month_name, carrier, n) %>%
+  select(month_name, origin, carrier, n) %>%
   group_by(carrier) %>%
   SharedData$new()
-colnames <- c("Departure date", "Carrier", "Number of departures")
+colnames <- c("Departure date", "Airport", "Carrier", "Number of departures")
 
+filter_select("daily_time_series_origin", "Choose an airport", shared_data, ~origin, multiple = FALSE)
 filter_select(
   "daily_time_series_carrier",
   "Choose carrier",
@@ -57,6 +59,7 @@ filter_select(
 )
 ```
 ```{js}
+setDefaultValue("daily_time_series_origin", "JFK");
 setDefaultValue("daily_time_series_carrier", "All carriers");
 ```
 
@@ -67,7 +70,8 @@ setDefaultValue("daily_time_series_carrier", "All carriers");
 ```{r}
 shared_data %>%
   plot_ly(type = "scatter", x = ~month_name, y = ~n,
-          color = ~carrier, name = ~carrier,
+          color = ~carrier, symbol = ~origin,
+          name = ~glue("{carrier} ({origin})"),
           mode = "markers+lines", colors = unname(pals::glasbey())
   ) %>%
   layout(
