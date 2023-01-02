@@ -21,13 +21,13 @@ library(plotly)
 
 ```{js}
 const setDefaultValue = function(filterId, defaultValue) {
-  document.addEventListener("DOMContentLoaded", function(event) { 
+  window.addEventListener("load", function(event) { 
     document.getElementById(filterId).getElementsByClassName("selectized")[0].selectize.setValue(defaultValue, false);
   });
 };
 ```
 
-# Overview {data-navmenu="Background"}
+# Overview
 
 ## Column
 
@@ -35,39 +35,43 @@ const setDefaultValue = function(filterId, defaultValue) {
 
 Text
 
-# Annual {data-navmenu="Time series"}
+# Daily time series
 
 ## Sidebar {.sidebar}
 
 ```{r}
-yearly_totals <- readRDS("output/results/yearly_totals.rds")
+daily_totals <- readRDS("output/results/daily_totals.rds")
 
-shared_data <- yearly_totals %>%
-  select(year, length_cat, n, mean_rating) %>%
-  group_by(length_cat) %>%
+shared_data <- daily_totals %>%
+  select(month_name, carrier, n) %>%
+  group_by(carrier) %>%
   SharedData$new()
-colnames <- c("Year", "Length", "Number of movies", "Mean rating")
+colnames <- c("Departure date", "Carrier", "Number of departures")
 
-bscols(list(
-  filter_checkbox("time_series_yearly_length", "Choose runtime", shared_data, ~length_cat)
-))
+filter_select(
+  "daily_time_series_carrier",
+  "Choose carrier",
+  shared_data,
+  ~carrier,
+  multiple = TRUE
+)
 ```
 ```{js}
-setDefaultValue("time_series_yearly_length", ["All"]);
+setDefaultValue("daily_time_series_carrier", "All carriers");
 ```
 
 ## Column
 
-### Movies
+### Flights
 
 ```{r}
 shared_data %>%
-  plot_ly(type = "scatter", x = ~year, y = ~n,
-          color = ~length_cat, name = ~length_cat,
+  plot_ly(type = "scatter", x = ~month_name, y = ~n,
+          color = ~carrier, name = ~carrier,
           mode = "markers+lines", colors = unname(pals::glasbey())
   ) %>%
   layout(
     yaxis = list(title = "", fixedrange = TRUE),
-    xaxis = list(title = "Projects", rangeslider = list(type = "date"))
+    xaxis = list(title = "Departures", rangeslider = list(type = "date"))
   )
 ```
