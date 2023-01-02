@@ -79,3 +79,36 @@ shared_data %>%
     xaxis = list(title = "Departures", rangeslider = list(type = "date"))
   )
 ```
+
+# Top destinations
+
+```{r}
+top_destinations <- readRDS("output/results/top_destinations.rds")
+shared_data <- top_destinations %>%
+  arrange(carrier, n) %>%
+  SharedData$new()
+```
+
+## Sidebar {.sidebar}
+
+```{r}
+filter_select("top_destinations_carrier", "Choose a carrier", shared_data, ~carrier, multiple = FALSE)
+```
+
+```{js}
+setDefaultValue("top_destinations_carrier", "AA");
+```
+
+## Column
+
+### Top destinations by carrier
+
+```{r}
+shared_data %>%
+  plot_ly() %>%
+  add_bars(x = ~n, y = ~dest, text = ~n, textposition = "outside", cliponaxis = FALSE, name = ~carrier, color = I("darkblue")) %>%
+  layout(
+    yaxis = list(title = "", categoryorder = "trace"),
+    showlegend = FALSE
+  )
+```
