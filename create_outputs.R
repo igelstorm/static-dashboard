@@ -19,7 +19,7 @@ if(!dir.exists("output/results")) {
 # Process the data
 source("scripts/01_clean_data/example.R", local=new.env())
 
-source("scripts/02_calculate_summary_data/example.R", local=new.env())
+source("scripts/02_calculate_summary_data/yearly_totals.R", local=new.env())
 
 # Render the dashboard to HTML
 rmarkdown::render(

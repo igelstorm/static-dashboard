@@ -13,6 +13,10 @@ knitr::opts_chunk$set(
   fig.height = 5,
   echo = FALSE
 )
+
+library(crosstalk)
+library(dplyr)
+library(plotly)
 ```
 
 ```{js}
@@ -30,3 +34,40 @@ const setDefaultValue = function(filterId, defaultValue) {
 ### Overview
 
 Text
+
+# Annual {data-navmenu="Time series"}
+
+## Sidebar {.sidebar}
+
+```{r}
+yearly_totals <- readRDS("output/results/yearly_totals.rds")
+
+shared_data <- yearly_totals %>%
+  select(year, length_cat, n, mean_rating) %>%
+  group_by(length_cat) %>%
+  SharedData$new()
+colnames <- c("Year", "Length", "Number of movies", "Mean rating")
+
+bscols(list(
+  filter_checkbox("time_series_yearly_length", "Choose runtime", shared_data, ~length_cat)
+))
+```
+```{js}
+setDefaultValue("time_series_yearly_length", ["All"]);
+```
+
+## Column
+
+### Movies
+
+```{r}
+shared_data %>%
+  plot_ly(type = "scatter", x = ~year, y = ~n,
+          color = ~length_cat, name = ~length_cat,
+          mode = "markers+lines", colors = unname(pals::glasbey())
+  ) %>%
+  layout(
+    yaxis = list(title = "", fixedrange = TRUE),
+    xaxis = list(title = "Projects", rangeslider = list(type = "date"))
+  )
+```
