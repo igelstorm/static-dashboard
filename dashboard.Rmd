@@ -28,14 +28,6 @@ const setDefaultValue = function(filterId, defaultValue) {
 };
 ```
 
-# Overview
-
-## Column
-
-### Overview
-
-Text
-
 # Daily time series
 
 ## Sidebar {.sidebar}
@@ -44,10 +36,8 @@ Text
 daily_totals <- readRDS("output/results/daily_totals.rds")
 
 shared_data <- daily_totals %>%
-  select(month_name, origin, carrier, n) %>%
   group_by(carrier) %>%
   SharedData$new()
-colnames <- c("Departure date", "Airport", "Carrier", "Number of departures")
 
 filter_select("daily_time_series_origin", "Choose an airport", shared_data, ~origin, multiple = FALSE)
 filter_select(
@@ -65,18 +55,31 @@ setDefaultValue("daily_time_series_carrier", "All carriers");
 
 ## Column
 
-### Flights
+### Number of flights
 
 ```{r}
 shared_data %>%
   plot_ly(type = "scatter", x = ~month_name, y = ~n,
-          color = ~carrier, symbol = ~origin,
-          name = ~glue("{carrier} ({origin})"),
+          color = ~carrier, name = ~carrier,
           mode = "markers+lines", colors = unname(pals::glasbey())
   ) %>%
   layout(
     yaxis = list(title = "", fixedrange = TRUE),
-    xaxis = list(title = "Departures", rangeslider = list(type = "date"))
+    xaxis = list(title = "Flights", rangeslider = list(type = "date"))
+  )
+```
+
+### Delayed flights
+
+```{r}
+shared_data %>%
+  plot_ly(type = "scatter", x = ~month_name, y = ~n_delayed,
+          color = ~carrier, name = ~carrier,
+          mode = "markers+lines", colors = unname(pals::glasbey())
+  ) %>%
+  layout(
+    yaxis = list(title = "", fixedrange = TRUE),
+    xaxis = list(title = "Delayed flights", rangeslider = list(type = "date"))
   )
 ```
 

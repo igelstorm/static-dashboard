@@ -19,7 +19,9 @@ if(!dir.exists("output/results")) {
 # Process the data
 source("scripts/01_clean_data/flights.R", local=new.env())
 
-source("scripts/02_calculate_summary_data/yearly_totals.R", local=new.env())
+source("scripts/02_calculate_summary_data/daily_totals.R", local=new.env())
+source("scripts/02_calculate_summary_data/fancy_top_destinations.R", local=new.env())
+source("scripts/02_calculate_summary_data/top_destinations.R", local=new.env())
 
 # Render the dashboard to HTML
 rmarkdown::render(
