@@ -3,7 +3,6 @@ title: "Example Dashboard"
 output: 
   flexdashboard::flex_dashboard:
     vertical_layout: scroll
-    # vertical_layout: fill
 knit: (function(inputFile, encoding) { rmarkdown::render(inputFile, encoding=encoding, output_dir = "output") })
 ---
 
