@@ -16,9 +16,10 @@ if(!dir.exists("output/results")) {
   dir.create("output/results", recursive = TRUE)
 }
 
-# Process the data
+# Import and clean the raw data
 source("scripts/01_clean_data/flights.R", local=new.env())
 
+# Generate summary data for the dashboard pages
 source("scripts/02_calculate_summary_data/daily_totals.R", local=new.env())
 source("scripts/02_calculate_summary_data/fancy_top_destinations.R", local=new.env())
 source("scripts/02_calculate_summary_data/top_destinations.R", local=new.env())
