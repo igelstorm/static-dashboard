@@ -139,21 +139,27 @@ setDefaultValue("fancy_top_dest_carrier", "AA");
 ```{r}
 p1 <- shared_data %>%
   plot_ly() %>%
-  add_bars(x = ~carrier_share, y = ~dest, text = ~carrier_share, textposition = "outside", cliponaxis = FALSE, name = ~carrier, color = I("darkblue")) %>%
+  add_bars(x = ~carrier_share, y = ~dest, text = ~scales::percent(carrier_share, 0.1), textposition = "outside", cliponaxis = FALSE, name = ~carrier, color = I("darkblue")) %>%
   layout(
     yaxis = list(title = "", categoryorder = "trace"),
     showlegend = FALSE
   )
 p2 <- shared_data %>%
   plot_ly() %>%
-  add_bars(x = ~carrier_diff_from_mean, y = ~dest, text = ~carrier_diff_from_mean, textposition = "outside", cliponaxis = FALSE, name = ~glue("Difference from average"), color = I("dimgray")) %>%
+  add_bars(x = ~carrier_diff_from_mean, y = ~dest, text = ~scales::percent(carrier_diff_from_mean, 0.1), textposition = "outside", cliponaxis = FALSE, name = ~glue("Difference from average"), color = I("dimgray")) %>%
   layout(showlegend = TRUE)
 
 subplot(p1, p2, shareY = TRUE) %>%
   layout(
     yaxis = list(showgrid = T),
-    xaxis = list(title = "Proportion of flights"),
-    xaxis2 = list(title = "Percentage points")
+    xaxis = list(
+      title = "Proportion of flights",
+      tickformat = ".0%"
+    ),
+    xaxis2 = list(
+      title = "Percentage points",
+      tickformat = ".0%"
+    )
   ) %>%
   highlight(on = NULL) %>%
   suppressWarnings()
