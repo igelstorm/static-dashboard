@@ -28,6 +28,20 @@ const setDefaultValue = function(filterId, defaultValue) {
 };
 ```
 
+# Overview
+
+## Column
+
+### Background
+
+This is an example of an interactive dashboard built using 
+[R Markdown](https://rmarkdown.rstudio.com/), 
+[flexdashboard](https://pkgs.rstudio.com/flexdashboard/), 
+[Plotly](https://plotly-r.com/), and
+[crosstalk](https://rstudio.github.io/crosstalk/).
+
+It's probably most useful to look at this in conjunction with [the source code on GitHub](https://github.com/igelstorm/static-dashboard) and [a blog post I wrote](https://www.erikigelstrom.com/articles/interactive-dashboards-in-r-without-shiny) about some aspects of the implementation.
+
 # Daily time series
 
 ## Sidebar {.sidebar}
@@ -167,3 +181,36 @@ subplot(p1, p2, shareY = TRUE) %>%
   highlight(on = NULL) %>%
   suppressWarnings()
 ```
+
+# Top destinations GONE WRONG
+
+```{r}
+top_destinations <- readRDS("output/results/top_destinations.rds")
+shared_data <- top_destinations %>%
+  arrange(carrier, n) %>%
+  SharedData$new()
+```
+
+## Sidebar {.sidebar}
+
+```{r}
+filter_select("bad_top_destinations_carrier", "Choose a carrier", shared_data, ~carrier, multiple = FALSE)
+```
+
+## Column
+
+### Top destinations by carrier
+
+```{r}
+shared_data %>%
+  plot_ly() %>%
+  add_bars(x = ~n, y = ~dest, text = ~n, textposition = "outside", cliponaxis = FALSE, name = ~carrier, color = I("darkblue")) %>%
+  layout(
+    yaxis = list(title = "", categoryorder = "trace"),
+    showlegend = FALSE
+  )
+```
+
+### What is this?
+
+This is a demonstration of how terribly wrong things can go if you don't manage to set a default value for the controls on a page: before the user selects an airline, they can see all the data at once, which is really not what we want. The [Top destinations](#top-destinations) page shows how it *should* work.
